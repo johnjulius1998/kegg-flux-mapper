@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Downloaded KEGG data (fetched on demand; KEGG terms restrict redistribution)
+kegg_cache/
+
+# Local metabolic models — bring your own (see models/README.md)
+models/*
+!models/README.md
