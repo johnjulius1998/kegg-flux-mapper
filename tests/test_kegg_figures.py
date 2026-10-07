@@ -3,21 +3,26 @@ import pytest
 from kfm import figures, kegg
 
 
+# KEGG data is downloaded live and changes between releases, so these checks are
+# structural; exact numbers are pinned only for model results.
+
 def test_png_size():
     assert kegg.png_size(b"not a png") == (0, 0)
     pm = kegg.pathway_map("map00710")
-    assert kegg.png_size(pm.png) == (1097, 961)
+    w, h = kegg.png_size(pm.png)
+    assert (w, h) == (pm.width, pm.height) and w > 500 and h > 500
 
 
-def test_pathway_map_from_cache():
+def test_pathway_map_parsed():
     pm = kegg.pathway_map("map00710")
-    assert pm.available and len(pm.boxes) == 31
+    assert pm.available and len(pm.boxes) >= 20
     assert all(b.reactions for b in pm.boxes)
 
 
 def test_global_tables():
-    assert len(kegg.pathway_index()) == 177
-    assert len(kegg.ec_to_reactions()) == 6020
+    index = kegg.pathway_index()
+    assert len(index) > 150 and index["map00010"]["name"].startswith("Glycolysis")
+    assert len(kegg.ec_to_reactions()) > 5000
 
 
 def test_pathway_figure(fructose):
